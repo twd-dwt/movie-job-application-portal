@@ -1,0 +1,71 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Job {
+  applicationDeadline DateTime?
+  applications        Application[]
+  createdAt           DateTime      @default(now())
+  department          String?
+  description         String?
+  id                  String        @id @default(cuid())
+  location            String?
+  postedDate          DateTime?
+  title               String?
+  updatedAt           DateTime      @updatedAt
+}
+
+model Applicant {
+  applications  Application[]
+  createdAt     DateTime      @default(now())
+  email         String?
+  firstName     String?
+  id            String        @id @default(cuid())
+  lastName      String?
+  portfolioLink String?
+  resume        Json?
+  updatedAt     DateTime      @updatedAt
+}
+
+model Application {
+  applicant       Applicant? @relation(fields: [applicantId], references: [id])
+  applicantId     String?
+  applicationDate DateTime?
+  createdAt       DateTime   @default(now())
+  id              String     @id @default(cuid())
+  job             Job?       @relation(fields: [jobId], references: [id])
+  jobId           String?
+  notes           String?
+  updatedAt       DateTime   @updatedAt
+}
+
+model Department {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Movie {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
